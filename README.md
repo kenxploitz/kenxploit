@@ -37,8 +37,8 @@ KenXploit adalah framework penetration testing berbasis AI yang menggunakan LLM 
 ### Cara 1: Auto Install (Recommended)
 
 ```bash
-# Clone dulu repository ini
-git clone https://github.com/kenxfear/kenxploit.git
+# Clone repository
+git clone https://github.com/kenxploitz/kenxploit.git
 cd kenxploit
 
 # Jalankan auto installer
@@ -47,25 +47,30 @@ chmod +x install.sh
 ```
 
 Installer akan melakukan:
-1. Install Python dependencies (`pip install -r requirements.txt`)
-2. Membuat symlink `/usr/local/bin/kenxploit` → binary KenXploit
-3. Membuat wrapper script agar bisa dijalankan dari mana saja
+1. **Auto-download binary** dari GitHub Release (jika belum ada)
+2. Install Python dependencies (`pip install -r requirements.txt`)
+3. Membuat symlink `/usr/local/bin/kenxploit` → binary KenXploit
 4. Verifikasi instalasi
 
 ### Cara 2: Manual Install
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/kenxfear/kenxploit.git
+git clone https://github.com/kenxploitz/kenxploit.git
 cd kenxploit
 
-# 2. Install Python dependencies
+# 2. Download binary dari GitHub Release
+# https://github.com/kenxploitz/kenxploit/releases
+# Download 'kenxploit-linux-amd64' dan rename ke 'kenxploit'
+
+# 3. Install Python dependencies
 pip install -r requirements.txt
 
-# 3. Buat symlink biar bisa dipanggil dari terminal manapun
+# 4. Buat symlink biar bisa dipanggil dari terminal manapun
+chmod +x kenxploit
 sudo ln -sf "$(pwd)/kenxploit" /usr/local/bin/kenxploit
 
-# 4. Test
+# 5. Test
 kenxploit --help
 ```
 
