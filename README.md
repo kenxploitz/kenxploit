@@ -2,6 +2,8 @@
 
 ## 🔥 Ultimate AI-Powered Penetration Testing Framework
 
+![KenXploit Preview](Screenshot_20260712_122920.png)
+
 KenXploit adalah framework penetration testing berbasis AI yang menggunakan LLM lokal/remote untuk melakukan otomatisasi pentest dari fase reconnaissance sampai reporting. Dibangun di atas OpenCode engine dengan custom agent prompt untuk red-team ops.
 
 ---
@@ -47,7 +49,7 @@ chmod +x install.sh
 ```
 
 Installer akan melakukan:
-1. **Auto-download binary** dari GitHub Release (jika belum ada)
+1. **Auto-download binary** dari [GitHub Release](https://github.com/kenxploitz/kenxploit/releases) (jika belum ada)
 2. Install Python dependencies (`pip install -r requirements.txt`)
 3. Membuat symlink `/usr/local/bin/kenxploit` → binary KenXploit
 4. Verifikasi instalasi
@@ -217,12 +219,14 @@ kenxploit -t target.com --mode exploit
 
 ```
 kenxploit/
-├── kenxploit              # Binary utama
+├── kenxploit              # Binary utama (download dari Release)
 ├── config.json            # Konfigurasi LLM
 ├── opencode.json          # Konfigurasi OpenCode + provider
 ├── requirements.txt       # Python dependencies
-├── install.sh             # Auto installer
+├── install.sh             # Auto installer (auto-download binary)
+├── uninstall.sh           # Uninstaller
 ├── README.md              # Dokumentasi
+├── .gitignore             # Git ignore rules
 ├── agent/
 │   └── pentest.md         # Prompt agent pentest
 ├── exploits/              # Exploit scripts
@@ -239,7 +243,6 @@ kenxploit/
 │   └── vuln_lab.py        # Vulnerable lab Flask lokal
 ├── tools/
 │   ├── cf-bypass/         # Cloudflare bypass tools
-│   ├── mc-bot-spammer/    # Minecraft bot tools
 │   └── proxy-hunt/        # Proxy hunting tools
 ├── proxy-scraper/         # FastAPI proxy scraper dashboard
 │   ├── app.py
@@ -248,20 +251,34 @@ kenxploit/
 │   ├── scraper.py
 │   └── validator.py
 ├── learn/                 # Knowledge base
-│   ├── old-web/
-│   ├── modern-web/
-│   ├── cloud/
-│   ├── mobile/
-│   ├── crypto/
-│   ├── deser/
-│   ├── waf-bypass/
-│   └── micro-vuln-hunting.md
-├── docs/
-│   └── osint-capabilities.md
-├── reports/               # Generated reports
-├── wordlists/             # Wordlists (optional)
-└── tmp/                   # Temp files
+│   ├── ad/                # Active Directory attacks
+│   ├── cloud/             # Cloud exploitation
+│   ├── crypto/            # Cryptography attacks
+│   ├── deser/             # Deserialization attacks
+│   ├── exploit/           # Exploit techniques (no domain)
+│   ├── mobile/            # Mobile pentesting
+│   ├── modern-web/        # Modern web stack exploits
+│   ├── old-web/           # Legacy web exploits
+│   └── waf-bypass/        # WAF bypass techniques
+├── .config/
+│   ├── learned.md         # Learning database
+│   └── learn/             # Reference materials
+└── Report/                # Generated reports (gitignored)
+    ├── exploit/           # Exploit reports
+    └── osint/             # OSINT reports
 ```
+
+---
+
+## 📦 Download Binary
+
+Binary KenXploit (140MB) tersedia di GitHub Release:
+
+🔗 **[Download v1.0.0](https://github.com/kenxploitz/kenxploit/releases/tag/v1.0.0)**
+
+Setelah download, taruh file `kenxploit` di folder root project dan jalankan `chmod +x kenxploit`.
+
+> **Note:** `install.sh` akan otomatis download binary jika belum ada.
 
 ---
 
@@ -296,6 +313,22 @@ python vuln_lab.py
 ```
 
 Includes: SQLi, SSTI, SSRF, Command Injection, File Upload, XSS, Path Traversal
+
+---
+
+## 📊 Struktur Penyimpanan Data
+
+KenXploit menyimpan data di dalam folder instalasi:
+
+| Lokasi | Fungsi |
+|--------|--------|
+| `Report/exploit/` | Laporan hasil exploit dan vulnerability |
+| `Report/osint/` | Laporan hasil OSINT dan intelligence |
+| `learn/exploit/` | Teknik exploit (tanpa domain/target) |
+| `.config/learned.md` | Log umum teknik yang berhasil |
+| `.config/learn/` | Reference materials dan CVE database |
+
+**Penting:** Folder `learn/` hanya menyimpan teknik exploit, bukan identitas target. Domain dan informasi target spesifik tidak disimpan di folder learn.
 
 ---
 
