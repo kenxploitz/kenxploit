@@ -108,25 +108,25 @@ Edit file `config.json`:
 | `dry_run` | Mode simulasi (tidak eksekusi perintah) |
 | `confirm_destructive` | Konfirmasi sebelum perintah destruktif |
 
-### Mode 2: Remote API (Nusa API / OpenAI / Custom)
+### Mode 2: Remote API (OpenAI-compatible)
 
 Edit file `opencode.json`:
 
 ```json
 {
   "username": "kenxploit",
-  "model": "nusa/mimo-v2.5-pro",
+  "model": "provider/model-name",
   "provider": {
-    "nusa": {
+    "custom": {
       "api": "openai",
-      "name": "Nusa API",
+      "name": "Custom API",
       "options": {
-        "apiKey": "YOUR_NUSA_API_KEY",
-        "baseURL": "https://ai.servernusa.com/v1"
+        "apiKey": "YOUR_API_KEY",
+        "baseURL": "https://your-api-endpoint.com/v1"
       },
       "models": {
-        "mimo-pro": { "id": "nusa/mimo-v2.5-pro" },
-        "mimo": { "id": "nusa/mimo-v2.5" }
+        "model-1": { "id": "provider/model-1" },
+        "model-2": { "id": "provider/model-2" }
       }
     }
   }
