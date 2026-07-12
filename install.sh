@@ -87,11 +87,33 @@ if [ -z "$PYTHON" ]; then
 fi
 success "Python: $($PYTHON --version 2>&1)"
 
-# --- Step 2: Check binary ---
+# --- Step 2: Check binary (auto-download if missing) ---
 info "Checking KenXploit binary..."
 if [ ! -f "$KENXPLOIT_BIN" ]; then
-  fail "Binary not found: $KENXPLOIT_BIN"
-  exit 1
+  warn "Binary not found locally, downloading from GitHub Release..."
+  
+  GITHUB_REPO="kenxploitz/kenxploit"
+  LATEST_RELEASE=$(curl -s "https://api.github.com/repos/$GITHUB_REPO/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+  
+  if [ -z "$LATEST_RELEASE" ]; then
+    LATEST_RELEASE="v1.0.0"
+  fi
+  
+  DOWNLOAD_URL="https://github.com/$GITHUB_REPO/releases/download/$LATEST_RELEASE/kenxploit-linux-amd64"
+  
+  info "Downloading from: $DOWNLOAD_URL"
+  if curl -L -o "$KENXPLOIT_BIN" "$DOWNLOAD_URL" --progress-bar; then
+    success "Binary downloaded: $KENXPLOIT_BIN"
+  else
+    fail "Download failed!"
+    echo ""
+    echo "  Manual download:"
+    echo "    1. Go to: https://github.com/$GITHUB_REPO/releases"
+    echo "    2. Download 'kenxploit-linux-amd64'"
+    echo "    3. Place in: $KENXPLOIT_DIR/kenxploit"
+    echo "    4. Run: chmod +x $KENXPLOIT_DIR/kenxploit"
+    exit 1
+  fi
 fi
 chmod +x "$KENXPLOIT_BIN"
 success "Binary: $KENXPLOIT_BIN"
