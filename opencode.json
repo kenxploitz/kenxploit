@@ -1,24 +1,57 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "username": "your-username",
-  "model": "local/your-model-name",
+  "username": "kenxploit",
+  "model": "tumpuk/mimo-v2.5-pro",
   "provider": {
     "local": {
       "api": "openai",
       "name": "Local Custom API",
       "options": {
-        "apiKey": "YOUR_API_KEY_HERE",
-        "baseURL": "http://localhost:11434/v1"
+        "apiKey": "sk-f035daa248bd880d-cb2e29-d855a0cb",
+        "baseURL": "http://localhost:20128/v1"
       },
       "models": {
-        "model-a": {
-          "id": "provider/model-a"
+        "deepseek-v4-flash-co": {
+          "id": "combo/combo/deepseek-v4-flash"
         },
-        "model-b": {
-          "id": "provider/model-b"
+        "mimo-v2.5-co": {
+          "id": "combo/mimo/mimo-v2.5"
         },
-        "model-c": {
-          "id": "provider/model-c"
+        "deepseek-v4-flash-oc": {
+          "id": "oc/deepseek-v4-flash-free"
+        },
+        "mimo-v2.5-free-oc": {
+          "id": "oc/mimo-v2.5-free"
+        },
+        "big-pickle-oc": {
+          "id": "oc/big-pickle"
+        },
+        "north-mini-code-free-oc": {
+          "id": "oc/north-mini-code-free"
+        },
+        "mimo-v2.5-pro-co": {
+          "id": "combo/mimo/mimo-v2.5-pro"
+        },
+        "mimo-auto-co": {
+          "id": "combo/mimo/mimo-auto"
+        },
+        "mimo-v2.5-tumpuk": {
+          "id": "tumpuk/mimo-v2.5"
+        },
+        "mimo-v2.5-asr-tumpuk": {
+          "id": "tumpuk/mimo-v2.5-asr"
+        },
+        "mimo-v2.5-pro-tumpuk": {
+          "id": "tumpuk/mimo-v2.5-pro"
+        },
+        "mimo-v2.5-tts-tumpuk": {
+          "id": "tumpuk/mimo-v2.5-tts"
+        },
+        "mimo-v2.5-tts-voiceclone-tumpuk": {
+          "id": "tumpuk/mimo-v2.5-tts-voiceclone"
+        },
+        "mimo-v2.5-tts-voicedesign-tumpuk": {
+          "id": "tumpuk/mimo-v2.5-tts-voicedesign"
         }
       }
     }

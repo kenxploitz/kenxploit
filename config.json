@@ -1,6 +1,6 @@
 {
   "llm": {
-    "api_key": "YOUR_API_KEY_HERE",
+    "api_key": "sk-f035daa248bd880d-cb2e29-d855a0cb",
     "base_url": "http://localhost:20128/v1",
     "model": "combo/combo/deepseek-v4-flash",
     "max_tokens": 8192,

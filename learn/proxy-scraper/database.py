@@ -101,10 +101,10 @@ async def init_db():
             now = int(time.time())
             await db.execute(
                 "INSERT INTO users (username, password_hash, role, api_key, created_at) VALUES (?, ?, ?, ?, ?)",
-                ("admin", hash_password("CHANGE_ME_ON_FIRST_RUN"), "admin", api_key, now)
+                ("admin", hash_password("KenXploit123!"), "admin", api_key, now)
             )
             await db.commit()
-            logger.info(f"[DB] Created default user: admin / CHANGE_ME_ON_FIRST_RUN / API: {api_key}")
+            logger.info(f"[DB] Created default user: admin / KenXploit123! / API: {api_key}")
         
         logger.info("[DB] Initialized")
 

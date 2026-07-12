@@ -44,11 +44,3 @@ Thumbs.db
 # Config with real API keys (template saja yang di-push)
 config.local.json
 opencode.local.json
-
-# Reports with real target data (capital R)
-Report/
-learn/tools/cf-bypass/CloudFail
-learn/tools/cf-bypass/CloudFlair
-learn/tools/cf-bypass/HatCloud
-learn/tools/cf-bypass/cloudflare-origin-ip
-kenxploit

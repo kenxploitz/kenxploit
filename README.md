@@ -1,30 +1,28 @@
 # KenXploit
 
-## AI-Powered Penetration Testing Framework
+## 🔥 Ultimate AI-Powered Penetration Testing Framework
 
-![KenXploit Preview](Screenshot_20260712_122920.png)
-
-KenXploit adalah framework penetration testing berbasis AI yang menggunakan LLM lokal/remote untuk melakukan otomatisasi pentest dari fase reconnaissance sampai reporting. Dibangun di atas OpenCode engine dengan custom agent prompt untuk operasi red-team.
+KenXploit adalah framework penetration testing berbasis AI yang menggunakan LLM lokal/remote untuk melakukan otomatisasi pentest dari fase reconnaissance sampai reporting. Dibangun di atas OpenCode engine dengan custom agent prompt untuk red-team ops.
 
 ---
 
-## Fitur
+## ✨ Fitur
 
 | Fitur | Deskripsi |
 |-------|-----------|
-| **AI Agent Pentest** | 5 fase pentest: Recon, Scanning, Exploit, Post-Exploit, Report |
-| **OSINT dan CSINT** | OSINT deep dan Cyber Social Intelligence (social media, email, domain, dorking) |
+| **AI Agent Pentest** | 5 fase pentest: Recon → Scanning → Exploit → Post-Exploit → Report |
+| **OSINT + CSINT** | OSINT deep + Cyber Social Intelligence (social media, email, domain, dorking) |
 | **Multi Model** | Support DeepSeek, MiMo V2.5 Pro, dan LLM lokal/remote apapun via OpenAI-compatible API |
 | **9 Exploit Scripts** | SQLi, SSRF, SSTI, XXE, JWT, GraphQL, Race Condition, Prototype Pollution, HTTP Smuggling |
 | **Auto Reporting** | Generate report PDF/Markdown otomatis untuk CTF, Pentest, OSINT, Vuln Scan, Exploit |
-| **Proxy Scraper** | Web dashboard untuk scraping dan validasi proxy (FastAPI) |
+| **Proxy Scraper** | Web dashboard untuk scraping & validasi proxy (FastAPI) |
 | **Cloudflare Bypass** | Tools untuk bypass Cloudflare protection |
-| **Vulnerable Lab** | Lab lokal Flask untuk latihan (SQLi, SSTI, SSRF, dan lainnya) |
-| **Knowledge Base** | 13+ modul learning: old-web, modern-web, cloud, mobile, crypto, deser, WAF bypass, dan lainnya |
+| **Vulnerable Lab** | Lab lokal Flask untuk latihan (SQLi, SSTI, SSRF, dll) |
+| **Knowledge Base** | 13+ modul learning: old-web, modern-web, cloud, mobile, crypto, deser, WAF bypass, dll |
 
 ---
 
-## Requirements
+## 📋 Requirements
 
 - **OS:** Linux (Ubuntu/Debian/Kali/Arch/Manjaro)
 - **Python 3.10+**
@@ -34,12 +32,12 @@ KenXploit adalah framework penetration testing berbasis AI yang menggunakan LLM 
 
 ---
 
-## Instalasi
+## 🔧 Instalasi
 
 ### Cara 1: Auto Install (Recommended)
 
 ```bash
-# Clone repository
+# Clone dulu repository ini
 git clone https://github.com/kenxfear/kenxploit.git
 cd kenxploit
 
@@ -50,7 +48,7 @@ chmod +x install.sh
 
 Installer akan melakukan:
 1. Install Python dependencies (`pip install -r requirements.txt`)
-2. Membuat symlink `/usr/local/bin/kenxploit` menuju binary KenXploit
+2. Membuat symlink `/usr/local/bin/kenxploit` → binary KenXploit
 3. Membuat wrapper script agar bisa dijalankan dari mana saja
 4. Verifikasi instalasi
 
@@ -64,18 +62,18 @@ cd kenxploit
 # 2. Install Python dependencies
 pip install -r requirements.txt
 
-# 3. Buat symlink agar bisa dipanggil dari terminal manapun
+# 3. Buat symlink biar bisa dipanggil dari terminal manapun
 sudo ln -sf "$(pwd)/kenxploit" /usr/local/bin/kenxploit
 
-# 4. Verifikasi
+# 4. Test
 kenxploit --help
 ```
 
 ---
 
-## Konfigurasi API Key
+## ⚙️ Konfigurasi API Key
 
-KenXploit mendukung dua mode koneksi LLM:
+KenXploit mendukung **dua mode koneksi LLM**:
 
 ### Mode 1: Local LLM (DeepSeek / Model Lokal)
 
@@ -84,7 +82,7 @@ Edit file `config.json`:
 ```json
 {
   "llm": {
-    "api_key": "YOUR_API_KEY_HERE",
+    "api_key": "sk-your-local-api-key",
     "base_url": "http://localhost:20128/v1",
     "model": "combo/combo/deepseek-v4-flash",
     "max_tokens": 8192,
@@ -99,9 +97,9 @@ Edit file `config.json`:
 }
 ```
 
-| Parameter | Keterangan |
-|-----------|------------|
-| `api_key` | API key LLM (bisa dummy untuk local) |
+| Parameter | Description |
+|-----------|-------------|
+| `api_key` | API key LLM (bisa dummy/local) |
 | `base_url` | Base URL OpenAI-compatible API |
 | `model` | Model ID (contoh: `combo/combo/deepseek-v4-flash`) |
 | `max_tokens` | Maksimum token per response |
@@ -110,68 +108,52 @@ Edit file `config.json`:
 | `dry_run` | Mode simulasi (tidak eksekusi perintah) |
 | `confirm_destructive` | Konfirmasi sebelum perintah destruktif |
 
-### Mode 2: Remote API (OpenAI-compatible)
+### Mode 2: Remote API (Nusa API / OpenAI / Custom)
 
 Edit file `opencode.json`:
 
 ```json
 {
   "username": "kenxploit",
-  "model": "provider/model-name",
+  "model": "nusa/mimo-v2.5-pro",
   "provider": {
-    "custom": {
+    "nusa": {
       "api": "openai",
-      "name": "Custom API",
+      "name": "Nusa API",
       "options": {
-        "apiKey": "YOUR_API_KEY",
-        "baseURL": "https://your-api-endpoint.com/v1"
+        "apiKey": "YOUR_NUSA_API_KEY",
+        "baseURL": "https://ai.servernusa.com/v1"
       },
       "models": {
-        "model-1": { "id": "provider/model-1" },
-        "model-2": { "id": "provider/model-2" }
+        "mimo-pro": { "id": "nusa/mimo-v2.5-pro" },
+        "mimo": { "id": "nusa/mimo-v2.5" }
       }
     }
   }
 }
 ```
 
-### Rekomendasi Model
+### Daftar Model yang Didukung
 
-KenXploit bekerja optimal dengan model yang memiliki weak safety alignment. Berikut rekomendasi model:
-
-| Model | Provider | Keterangan |
-|-------|----------|------------|
-| **MiMo V2.5 Pro** | Combo/Tumpuk/OC | Best for pentest, weak alignment |
-| **MiMo V2.5** | Combo/Tumpuk/OC | Lightweight, fast |
-| **DeepSeek V4 Flash** | Combo/OC | Fast inference, good for automation |
-| **Big Pickle** | OC | Uncensored, strong for red-team |
-| **North Mini Code** | OC | Code-focused, minimal filtering |
-
-Model lain yang kompatibel (OpenAI-compatible API):
-- Any model with weak safety alignment
-- Local models via Ollama, LM Studio, text-generation-webui
-- Self-hosted models tanpa content filter
+| Model ID | Provider | Type |
+|----------|----------|------|
+| `combo/combo/deepseek-v4-flash` | Local/Combo | Chat |
+| `combo/mimo/mimo-v2.5` | Local/Combo | Chat |
+| `combo/mimo/mimo-v2.5-pro` | Local/Combo | Chat Pro |
+| `combo/mimo/mimo-auto` | Local/Combo | Auto |
+| `tumpuk/mimo-v2.5` | Tumpuk | Chat |
+| `tumpuk/mimo-v2.5-pro` | Tumpuk | Chat Pro |
+| `tumpuk/mimo-v2.5-asr` | Tumpuk | ASR/Speech |
+| `tumpuk/mimo-v2.5-tts` | Tumpuk | TTS |
+| `oc/deepseek-v4-flash-free` | OC | Chat Free |
+| `oc/mimo-v2.5-free` | OC | Chat Free |
+| `oc/mimo-v2.5-pro` | OC | Chat Pro |
 
 ---
 
-## Penggunaan
+## 🚀 Penggunaan
 
-### TUI Mode (Interactive)
-
-Cukup ketik `kenxploit` untuk membuka Terminal User Interface:
-
-```bash
-kenxploit
-```
-
-TUI menyediakan menu interaktif untuk:
-- Memilih target dan mode pentest
-- Konfigurasi LLM dan provider
-- Melihat progress scan real-time
-- Menjelajahi hasil findings
-- Generate report
-
-### CLI Mode (Non-Interactive)
+### Basic Commands
 
 ```bash
 # Lihat help
@@ -193,19 +175,19 @@ KenXploit menjalankan 5 fase pentest secara otomatis:
 
 ```
 Phase 1: Reconnaissance
-  DNS enumeration, subdomain, WHOIS, port scan, technology detection
+  → DNS enumeration, subdomain, WHOIS, port scan, technology detection
 
 Phase 2: Scanning & Enumeration
-  Vulnerability scanning, service enumeration, directory brute force
+  → Vulnerability scanning, service enumeration, directory brute force
 
 Phase 3: Exploitation
-  SQLi, XSS, SSRF, LFI, RCE, auth bypass sesuai target
+  → SQLi, XSS, SSRF, LFI, RCE, auth bypass sesuai target
 
 Phase 4: Post-Exploitation
-  Privilege escalation, lateral movement, data exfiltration, persistence
+  → Privilege escalation, lateral movement, data exfiltration, persistence
 
 Phase 5: Reporting
-  Generate detailed report (Markdown/PDF)
+  → Generate detailed report (Markdown/PDF)
 ```
 
 ### Contoh Penggunaan
@@ -214,7 +196,7 @@ Phase 5: Reporting
 # Pentest full 5 fase
 kenxploit -t https://target.com
 
-# OSINT dan CSINT deep
+# OSINT + CSINT deep
 kenxploit -t target.com --mode osint
 
 # Vulnerability scan only
@@ -226,18 +208,16 @@ kenxploit -t target.com --mode exploit
 
 ---
 
-## Struktur Direktori
+## 📁 Struktur Direktori
 
 ```
 kenxploit/
 ├── kenxploit              # Binary utama
 ├── config.json            # Konfigurasi LLM
-├── opencode.json          # Konfigurasi OpenCode dan provider
+├── opencode.json          # Konfigurasi OpenCode + provider
 ├── requirements.txt       # Python dependencies
 ├── install.sh             # Auto installer
-├── uninstall.sh           # Uninstaller
 ├── README.md              # Dokumentasi
-├── .gitignore             # Git ignore rules
 ├── agent/
 │   └── pentest.md         # Prompt agent pentest
 ├── exploits/              # Exploit scripts
@@ -254,6 +234,7 @@ kenxploit/
 │   └── vuln_lab.py        # Vulnerable lab Flask lokal
 ├── tools/
 │   ├── cf-bypass/         # Cloudflare bypass tools
+│   ├── mc-bot-spammer/    # Minecraft bot tools
 │   └── proxy-hunt/        # Proxy hunting tools
 ├── proxy-scraper/         # FastAPI proxy scraper dashboard
 │   ├── app.py
@@ -262,100 +243,82 @@ kenxploit/
 │   ├── scraper.py
 │   └── validator.py
 ├── learn/                 # Knowledge base
-│   ├── ad/                # Active Directory attacks
-│   ├── cloud/             # Cloud exploitation
-│   ├── crypto/            # Cryptography attacks
-│   ├── deser/             # Deserialization attacks
-│   ├── exploit/           # Exploit techniques (no domain)
-│   ├── mobile/            # Mobile pentesting
-│   ├── modern-web/        # Modern web stack exploits
-│   ├── old-web/           # Legacy web exploits
-│   └── waf-bypass/        # WAF bypass techniques
-├── .config/
-│   ├── learned.md         # Learning database
-│   └── learn/             # Reference materials
-└── Report/                # Generated reports (gitignored)
-    ├── exploit/           # Exploit reports
-    └── osint/             # OSINT reports
+│   ├── old-web/
+│   ├── modern-web/
+│   ├── cloud/
+│   ├── mobile/
+│   ├── crypto/
+│   ├── deser/
+│   ├── waf-bypass/
+│   └── micro-vuln-hunting.md
+├── docs/
+│   └── osint-capabilities.md
+├── reports/               # Generated reports
+├── wordlists/             # Wordlists (optional)
+└── tmp/                   # Temp files
 ```
 
 ---
 
-## Proxy Scraper Dashboard
+## 🔌 Proxy Scraper Dashboard
 
-KenXploit menyertakan web-based proxy scraper dashboard:
+KenXploit includes a web-based proxy scraper dashboard:
 
 ```bash
 cd proxy-scraper
-pip install -r requirements.txt
+pip install -r requirements.txt  # FastAPI, uvicorn, etc
 python main.py
-# Dashboard tersedia di http://localhost:8080
+# → Dashboard: http://localhost:8080
 ```
 
-Fitur:
-- Scrape proxy dari multiple sources
-- Validasi dan test proxy
-- Export ke TXT/JSON
+Features:
+- Scrape proxies from multiple sources
+- Validate & test proxies
+- Export to TXT/JSON
 - Real-time logs via WebSocket
-- Dashboard terproteksi autentikasi
+- Auth-protected dashboard
 
 ---
 
-## Vulnerable Lab
+## 🔬 Vulnerable Lab
 
 Latihan pentest lokal tanpa risiko:
 
 ```bash
 cd labs
 python vuln_lab.py
-# Tersedia di http://localhost:5000
+# → http://localhost:5000
 ```
 
-Mencakup: SQLi, SSTI, SSRF, Command Injection, File Upload, XSS, Path Traversal
+Includes: SQLi, SSTI, SSRF, Command Injection, File Upload, XSS, Path Traversal
 
 ---
 
-## Struktur Penyimpanan Data
+## ⚠️ Disclaimer
 
-KenXploit menyimpan data di dalam folder instalasi:
-
-| Lokasi | Fungsi |
-|--------|--------|
-| `Report/exploit/` | Laporan hasil exploit dan vulnerability |
-| `Report/osint/` | Laporan hasil OSINT dan intelligence |
-| `learn/exploit/` | Teknik exploit (tanpa domain/target) |
-| `.config/learned.md` | Log umum teknik yang berhasil |
-| `.config/learn/` | Reference materials dan CVE database |
-
-**Penting:** Folder `learn/` hanya menyimpan teknik exploit, bukan identitas target. Domain dan informasi target spesifik tidak disimpan di folder learn.
-
----
-
-## Disclaimer
-
-**KenXploit hanya untuk security testing yang terotorisasi dan tujuan edukasi.**
+**KenXploit is for authorized security testing and educational purposes only.**
 
 - Hanya gunakan pada target yang Anda miliki atau memiliki izin tertulis
 - Penggunaan ilegal adalah tanggung jawab pengguna sepenuhnya
 - Penulis tidak bertanggung jawab atas penyalahgunaan
-- Harus compliance dengan UU ITE dan hukum yang berlaku
+- Compliance dengan UU ITE dan hukum yang berlaku
 
 ---
 
-## License
+## 📝 License
 
-MIT License - Untuk pendidikan dan research saja.
-
----
-
-## Author
-
-**Ken Xfear** - Red Team / Pentester
+MIT License — Pendidikan dan research hanya.
 
 ---
 
-## Support
+## 👤 Author
 
-- Star repository ini jika bermanfaat
-- Report issues di GitHub Issues
-- Pull requests welcome
+**Ken Xfear** — Red Team / Pentester
+
+---
+
+## 🌟 Support
+
+- ⭐ Star repository ini jika bermanfaat
+- 🐛 Report issues di GitHub Issues
+- 🔄 Pull requests welcome
