@@ -2,6 +2,8 @@
 
 ## AI-Powered Penetration Testing Framework
 
+![KenXploit Preview](Screenshot_20260712_122920.png)
+
 KenXploit adalah framework penetration testing berbasis AI yang menggunakan LLM lokal/remote untuk melakukan otomatisasi pentest dari fase reconnaissance sampai reporting. Dibangun di atas OpenCode engine dengan custom agent prompt untuk operasi red-team.
 
 ---
