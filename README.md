@@ -154,7 +154,22 @@ Model lain yang kompatibel (OpenAI-compatible API):
 
 ## Penggunaan
 
-### Basic Commands
+### TUI Mode (Interactive)
+
+Cukup ketik `kenxploit` untuk membuka Terminal User Interface:
+
+```bash
+kenxploit
+```
+
+TUI menyediakan menu interaktif untuk:
+- Memilih target dan mode pentest
+- Konfigurasi LLM dan provider
+- Melihat progress scan real-time
+- Menjelajahi hasil findings
+- Generate report
+
+### CLI Mode (Non-Interactive)
 
 ```bash
 # Lihat help
