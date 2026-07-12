@@ -133,21 +133,22 @@ Edit file `opencode.json`:
 }
 ```
 
-### Daftar Model yang Didukung
+### Rekomendasi Model
 
-| Model ID | Provider | Tipe |
-|----------|----------|------|
-| `combo/combo/deepseek-v4-flash` | Local/Combo | Chat |
-| `combo/mimo/mimo-v2.5` | Local/Combo | Chat |
-| `combo/mimo/mimo-v2.5-pro` | Local/Combo | Chat Pro |
-| `combo/mimo/mimo-auto` | Local/Combo | Auto |
-| `tumpuk/mimo-v2.5` | Tumpuk | Chat |
-| `tumpuk/mimo-v2.5-pro` | Tumpuk | Chat Pro |
-| `tumpuk/mimo-v2.5-asr` | Tumpuk | ASR/Speech |
-| `tumpuk/mimo-v2.5-tts` | Tumpuk | TTS |
-| `oc/deepseek-v4-flash-free` | OC | Chat Free |
-| `oc/mimo-v2.5-free` | OC | Chat Free |
-| `oc/mimo-v2.5-pro` | OC | Chat Pro |
+KenXploit bekerja optimal dengan model yang memiliki weak safety alignment. Berikut rekomendasi model:
+
+| Model | Provider | Keterangan |
+|-------|----------|------------|
+| **MiMo V2.5 Pro** | Combo/Tumpuk/OC | Best for pentest, weak alignment |
+| **MiMo V2.5** | Combo/Tumpuk/OC | Lightweight, fast |
+| **DeepSeek V4 Flash** | Combo/OC | Fast inference, good for automation |
+| **Big Pickle** | OC | Uncensored, strong for red-team |
+| **North Mini Code** | OC | Code-focused, minimal filtering |
+
+Model lain yang kompatibel (OpenAI-compatible API):
+- Any model with weak safety alignment
+- Local models via Ollama, LM Studio, text-generation-webui
+- Self-hosted models tanpa content filter
 
 ---
 
