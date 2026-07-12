@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KenXploit · Sign In</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0c0e;
+            --surface: #141517;
+            --surface-2: #1c1d21;
+            --border: #2a2c32;
+            --border-hover: #3a3c44;
+            --text: #e8e9ed;
+            --text-2: #989aa4;
+            --text-3: #5c5e66;
+            --accent: #4f7dff;
+            --accent-soft: rgba(79,125,255,0.12);
+            --success: #34d399;
+            --danger: #f87171;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --font: 'Inter', -apple-system, sans-serif;
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+            --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { -webkit-font-smoothing:antialiased; }
+        body { font-family:var(--font); background:var(--bg); color:var(--text); min-height:100vh; display:flex; align-items:center; justify-content:center; }
+        .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:40px; width:380px; max-width:90vw; box-shadow:var(--shadow-lg); }
+        .brand { text-align:center; margin-bottom:32px; }
+        .brand h1 { font-size:22px; font-weight:700; letter-spacing:-0.5px; color:var(--text); }
+        .brand p { font-size:13px; color:var(--text-3); margin-top:4px; }
+        .form-group { margin-bottom:18px; }
+        .form-group label { display:block; font-size:12px; color:var(--text-2); margin-bottom:6px; font-weight:500; }
+        .form-group input { width:100%; padding:10px 14px; background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:var(--font); font-size:14px; outline:none; transition:var(--transition); }
+        .form-group input:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+        .form-group input::placeholder { color:var(--text-3); }
+        .form-group .checkbox { display:flex; align-items:center; gap:8px; }
+        .form-group .checkbox input { width:auto; }
+        .btn { width:100%; padding:11px; background:var(--accent); color:#fff; border:none; border-radius:var(--radius-sm); font-family:var(--font); font-size:14px; font-weight:600; cursor:pointer; transition:var(--transition); }
+        .btn:hover { filter:brightness(1.1); }
+        .btn:active { transform:scale(0.98); }
+        .btn:disabled { opacity:0.5; cursor:not-allowed; }
+        .error { color:var(--danger); font-size:13px; margin-top:10px; text-align:center; display:none; }
+        .error.show { display:block; }
+        .loading-spinner { display:inline-block; width:14px; height:14px; border:2px solid rgba(255,255,255,0.2); border-top-color:#fff; border-radius:50%; animation:spin .8s linear infinite; vertical-align:middle; margin-right:6px; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .footer { text-align:center; margin-top:24px; font-size:12px; color:var(--text-3); }
+    </style>
+</head>
+<body>
+    <div class="login">
+        <div class="login">
+            <div class="brand">
+                <h1>KenXploit Proxy</h1>
+                <p>Sign in to your dashboard</p>
+            </div>
+            <form id="login-form" onsubmit="return handleLogin(event)">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="username" autocomplete="username" required spellcheck="false">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" autocomplete="current-password" required>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox">
+                        <input type="checkbox" id="remember">
+                        <label for="remember" style="font-size:13px;color:var(--text-2);cursor:pointer">Remember me</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn" id="login-btn">
+                    <span id="btn-text">Sign In</span>
+                </button>
+                <div class="error" id="error-msg">Invalid credentials</div>
+            </form>
+            <div class="footer">KenXploit Proxy Scraper v2.0</div>
+        </div>
+    </div>
+
+    <script>
+        async function handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('login-btn');
+            const txt = document.getElementById('btn-text');
+            const err = document.getElementById('error-msg');
+            btn.disabled = true;
+            txt.innerHTML = '<span class="footer-spinner"></span> Signing in...';
+            err.classList.remove('show');
+            try {
+                const r = await fetch('/api/login', {
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify({
+                        username: document.getElementById('username').value,
+                        password: document.getElementById('password').value,
+                        remember: document.getElementById('remember').checked
+                    })
+                });
+                const d = await r.json();
+                if (r.ok) { window.location.href = '/'; }
+                else { err.textContent = d.detail || 'Login failed'; err.classList.add('show'); btn.disabled = false; txt.textContent = 'Sign In'; }
+            } catch(_) {
+                err.textContent = 'Connection error'; err.classList.add('show');
+                btn.disabled = false; txt.textContent = 'Sign In';
+            }
+            return false;
+        }
+        document.getElementById('username').focus();
+    </script>
+</body>
+</html>

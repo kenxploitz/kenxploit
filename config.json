@@ -1,0 +1,38 @@
+{
+  "llm": {
+    "api_key": "YOUR_API_KEY_HERE",
+    "base_url": "http://localhost:20128/v1",
+    "model": "combo/combo/deepseek-v4-flash",
+    "max_tokens": 8192,
+    "temperature": 0.3
+  },
+  "agent": {
+    "max_steps": 50,
+    "dry_run": false,
+    "confirm_destructive": true,
+    "target": "",
+    "scope": "",
+    "output_dir": "reports"
+  },
+  "destructive_patterns": [
+    "sqlmap",
+    "metasploit",
+    "msfconsole",
+    "hydra",
+    "hashcat",
+    "john",
+    "rm -rf",
+    "mkfs",
+    "dd if=",
+    "> /dev/",
+    "format",
+    "drop table",
+    "DROP DATABASE",
+    "shutdown",
+    "reboot",
+    "msfvenom",
+    "impacket-secretsdump",
+    "mimikatz",
+    "certipy"
+  ]
+}

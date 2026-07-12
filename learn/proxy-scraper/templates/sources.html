@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KenXploit · Sources</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0c0e; --surface: #141517; --surface-2: #1c1d21; --border: #2a2c32;
+            --text: #e8e9ed; --text-2: #989aa4; --text-3: #5c5e66;
+            --accent: #4f7dff; --accent-soft: rgba(79,125,255,0.12);
+            --radius: 12px; --radius-sm: 8px;
+            --font: 'Inter', -apple-system, sans-serif;
+            --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { -webkit-font-smoothing:antialiased; }
+        body { font-family:var(--font); background:var(--bg); color:var(--text); }
+        .container { max-width:1200px; margin:0 auto; padding:24px 32px; }
+        ::-webkit-scrollbar { width:6px; } ::-webkit-scrollbar-track { background:var(--surface); } ::-webkit-scrollbar-thumb { background:#24262b; border-radius:3px; }
+
+        .header { display:flex; justify-content:space-between; align-items:center; padding:16px 0 24px; border-bottom:1px solid var(--border); margin-bottom:24px; flex-wrap:wrap; gap:16px; }
+        .header h1 { font-size:20px; font-weight:600; }
+        .header h1 span { color:var(--text-3); font-weight:400; }
+        .nav { display:flex; gap:4px; }
+        .nav a { color:var(--text-3); text-decoration:none; padding:8px 14px; border-radius:var(--radius-sm); font-size:14px; font-weight:500; transition:var(--transition); }
+        .nav a:hover { color:var(--text); background:var(--surface-2); }
+        .nav a.active { color:var(--accent); background:var(--accent-soft); }
+
+        .info { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px; margin-bottom:20px; }
+        .info h2 { font-size:15px; font-weight:600; margin-bottom:6px; }
+        .info p { color:var(--text-3); font-size:13px; line-height:1.6; }
+
+        .search-bar { display:flex; gap:8px; margin-bottom:16px; align-items:center; }
+        .search-bar input { flex:1; padding:10px 14px; background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:var(--font); font-size:14px; outline:none; transition:var(--transition); }
+        .search-bar input:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+        .search-bar .count { color:var(--text-3); font-size:13px; }
+
+        .source-list { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+        .source-header { padding:14px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; }
+        .source-header h2 { font-size:15px; font-weight:600; }
+        .source-item { padding:10px 20px; border-bottom:1px solid var(--border); font-size:13px; display:flex; align-items:center; gap:12px; }
+        .source-item:last-child { border-bottom:none; }
+        .source-item:hover { background:rgba(79,125,255,0.02); }
+        .source-num { color:var(--text-3); min-width:35px; }
+        .source-url { color:var(--text-2); word-break:break-all; flex:1; }
+        .source-url a { color:var(--accent); text-decoration:none; }
+        .source-url a:hover { text-decoration:underline; }
+        .source-type { padding:2px 8px; border-radius:4px; font-size:11px; font-weight:600; min-width:45px; text-align:center; }
+        .type-GH { background:rgba(52,211,153,0.12); color:#34d399; }
+        .type-API { background:var(--accent-soft); color:var(--accent); }
+        .type-PASTE { background:rgba(251,191,36,0.12); color:#fbbf24; }
+        .type-WEB { background:rgba(167,139,250,0.12); color:#a78bfa; }
+
+        .footer { text-align:center; padding:24px; color:var(--text-3); font-size:12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Proxy Sources <span>({{ total }})</span></h1>
+            <div class="nav">
+                <a href="/">Dashboard</a><a href="/proxies">Proxies</a><a href="/logs">Logs</a><a href="/sources" class="active">Sources</a><a href="/settings">Settings</a>
+            </div>
+        </div>
+
+        <div class="info">
+            <h2>{{ total }} Unique Sources</h2>
+            <p>GitHub repositories, proxy aggregator APIs, paste sites, and niche sources. All scraped automatically every scrape cycle.</p>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" id="search" placeholder="Search sources..." onkeyup="filterSources()">
+            <span class="count" id="visible-count">{{ total }} / {{ total }}</span>
+        </div>
+
+        <div class="source-list">
+            <div class="source-header">
+                <h2>Sources</h2>
+                <span style="color:var(--text-3);font-size:12px">Click to open</span>
+            </div>
+            {% for url in sources %}
+            <div class="source-item" data-url="{{ url|lower }}">
+                <span class="source-num">{{ loop.index }}</span>
+                <span class="source-type {{ 'type-GH' if 'github' in url else ('type-API' if 'api' in url else ('type-PASTE' if 'paste' in url or 'rentry' in url or 'hastebin' in url or 'dpaste' in url or 'ghostbin' in url else 'type-WEB')) }}">
+                    {{ 'GH' if 'github' in url else ('API' if 'api' in url else ('PASTE' if 'paste' in url or 'rentry' in url or 'hastebin' in url or 'dpaste' in url or 'ghostbin' in url else 'WEB')) }}
+                </span>
+                <span class="source-url"><a href="{{ url }}" target="_blank" rel="noopener">{{ url }}</a></span>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="footer">KenXploit Proxy Scraper v2.0</div>
+    </div>
+
+    <script>
+        function filterSources() {
+            const q = document.getElementById('search').value.toLowerCase();
+            const items = document.querySelectorAll('.source-item');
+            let visible = 0;
+            items.forEach(item => {
+                if ((item.dataset.url || '').includes(q)) { item.style.display = ''; visible++; }
+                else { item.style.display = 'none'; }
+            });
+            document.getElementById('visible-count').textContent = visible + ' / ' + items.length;
+        }
+    </script>
+</body>
+</html>

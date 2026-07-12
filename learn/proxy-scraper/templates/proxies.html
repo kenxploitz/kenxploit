@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KenXploit · Proxies</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0c0e; --surface: #141517; --surface-2: #1c1d21; --surface-3: #24262b;
+            --border: #2a2c32; --border-hover: #3a3c44;
+            --text: #e8e9ed; --text-2: #989aa4; --text-3: #5c5e66;
+            --accent: #4f7dff; --accent-soft: rgba(79,125,255,0.12);
+            --success: #34d399; --warning: #fbbf24; --danger: #f87171; --info: #60a5fa;
+            --radius: 12px; --radius-sm: 8px;
+            --font: 'Inter', -apple-system, sans-serif;
+            --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { -webkit-font-smoothing:antialiased; }
+        body { font-family:var(--font); background:var(--bg); color:var(--text); line-height:1.5; }
+        .container { max-width:1400px; margin:0 auto; padding:24px 32px; }
+        ::-webkit-scrollbar { width:6px; } ::-webkit-scrollbar-track { background:var(--surface); } ::-webkit-scrollbar-thumb { background:var(--surface-3); border-radius:3px; }
+
+        .header { display:flex; justify-content:space-between; align-items:center; padding:16px 0 24px; border-bottom:1px solid var(--border); margin-bottom:24px; flex-wrap:wrap; gap:16px; }
+        .header h1 { font-size:20px; font-weight:600; letter-spacing:-0.3px; }
+        .nav { display:flex; gap:4px; }
+        .nav a { color:var(--text-3); text-decoration:none; padding:8px 14px; border-radius:var(--radius-sm); font-size:14px; font-weight:500; transition:var(--transition); }
+        .nav a:hover { color:var(--text); background:var(--surface-2); }
+        .nav a.active { color:var(--accent); background:var(--accent-soft); }
+
+        .text-3 { color:var(--text-3); } .text-2 { color:var(--text-2); }
+
+        .filters { display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
+        .btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border:1px solid var(--border); background:var(--surface); color:var(--text-2); border-radius:var(--radius-sm); font-family:var(--font); font-size:13px; font-weight:500; cursor:pointer; transition:var(--transition); text-decoration:none; }
+        .btn:hover { border-color:var(--border-hover); color:var(--text); background:var(--surface-2); }
+        .btn.active { border-color:var(--accent); color:var(--accent); background:var(--accent-soft); }
+        .search-box { display:flex; gap:6px; margin-left:auto; }
+        .search-box input { padding:8px 12px; background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:var(--font); font-size:13px; width:180px; outline:none; transition:var(--transition); }
+        .search-box input:focus { border-color:var(--accent); }
+
+        .table-wrap { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+        .table-header { display:flex; justify-content:space-between; align-items:center; padding:14px 20px; border-bottom:1px solid var(--border); }
+        .table-header h2 { font-size:15px; font-weight:600; }
+        .table-scroll { overflow-x:auto; }
+        table { width:100%; border-collapse:collapse; font-size:13px; }
+        th { padding:10px 16px; text-align:left; font-weight:500; font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:0.5px; border-bottom:1px solid var(--border); background:var(--surface-2); }
+        td { padding:10px 16px; border-bottom:1px solid var(--border); }
+        tr:last-child td { border-bottom:none; }
+        tr:hover td { background:rgba(79,125,255,0.03); }
+        code { font-family:'SF Mono','JetBrains Mono',monospace; font-size:13px; color:var(--accent); background:var(--accent-soft); padding:2px 8px; border-radius:4px; }
+
+        .badge { display:inline-flex; padding:2px 10px; border-radius:20px; font-size:11px; font-weight:600; }
+        .badge-http { background:rgba(96,165,250,0.15); color:var(--info); }
+        .badge-socks4 { background:rgba(251,191,36,0.15); color:var(--warning); }
+        .badge-socks5 { background:rgba(167,139,250,0.15); color:#a78bfa; }
+        .latency-good { color:var(--success); } .latency-ok { color:var(--warning); } .latency-bad { color:var(--danger); }
+
+        .copy-btn, .delete-btn { background:none; border:1px solid var(--border); padding:3px 8px; border-radius:4px; cursor:pointer; font-size:11px; font-family:var(--font); transition:var(--transition); }
+        .copy-btn { color:var(--text-3); }
+        .copy-btn:hover { border-color:var(--accent); color:var(--accent); }
+        .delete-btn { color:var(--danger); }
+        .delete-btn:hover { border-color:var(--danger); }
+
+        .pagination { display:flex; justify-content:center; align-items:center; gap:4px; padding:14px; }
+        .pagination .info { color:var(--text-3); font-size:12px; margin:0 10px; }
+
+        .toast { position:fixed; bottom:24px; right:24px; background:var(--surface-2); border:1px solid var(--border); color:var(--text); padding:12px 20px; border-radius:var(--radius-sm); font-size:14px; z-index:999; opacity:0; transition:opacity .3s,transform .3s; transform:translateY(8px); box-shadow:0 8px 32px rgba(0,0,0,0.5); }
+        .toast.show { opacity:1; transform:translateY(0); }
+        .footer { text-align:center; padding:24px; color:var(--text-3); font-size:12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Proxies</h1>
+            <div class="nav">
+                <a href="/">Dashboard</a>
+                <a href="/proxies" class="active">Proxies</a>
+                <a href="/logs">Logs</a>
+                <a href="/sources">Sources</a>
+                <a href="/settings">Settings</a>
+            </div>
+        </div>
+
+        <div class="text-2" style="font-size:13px;margin-bottom:12px;display:flex;gap:20px;">
+            <span>Total: <strong class="text">{{ stats.total_all }}</strong></span>
+            <span>Alive: <strong class="text" style="color:var(--success)">{{ stats.total_alive }}</strong></span>
+            <span>HTTP: <strong style="color:var(--info)">{{ stats.http_alive }}</strong></span>
+            <span>SOCKS4: <strong style="color:var(--warning)">{{ stats.socks4_alive }}</strong></span>
+            <span>SOCKS5: <strong style="color:#a78bfa">{{ stats.socks5_alive }}</strong></span>
+        </div>
+
+        <div class="filters">
+            <a href="/proxies" class="btn {{ 'active' if selected_protocol == 'all' }}">All ({{ stats.total_alive }})</a>
+            <a href="/proxies?protocol=http" class="btn {{ 'active' if selected_protocol == 'http' }}">HTTP ({{ stats.http_alive }})</a>
+            <a href="/proxies?protocol=socks4" class="btn {{ 'active' if selected_protocol == 'socks4' }}">SOCKS4 ({{ stats.socks4_alive }})</a>
+            <a href="/proxies?protocol=socks5" class="btn {{ 'active' if selected_protocol == 'socks5' }}">SOCKS5 ({{ stats.socks5_alive }})</a>
+            <div class="search-box">
+                <input type="text" id="search" placeholder="Search IP..." onkeydown="if(event.key==='Enter')searchProxy()">
+                <button class="btn" onclick="copyAll()">Copy All</button>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <div class="table-header">
+                <h2>Live Proxies</h2>
+                <span class="text-3" style="font-size:12px">Page {{ page }} · {{ proxies|length }} shown · {{ total }} total</span>
+            </div>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr><th>#</th><th>IP:Port</th><th>Protocol</th><th>Latency</th><th>Speed</th><th>Country</th><th>Uptime</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody>
+                        {% if proxies %}
+                        {% for p in proxies %}
+                        <tr>
+                            <td style="color:var(--text-3)">{{ (page-1) * limit + loop.index }}</td>
+                            <td><code>{{ p.ip }}:{{ p.port }}</code></td>
+                            <td><span class="badge badge-{{ p.protocol }}">{{ p.protocol|upper }}</span></td>
+                            <td class="{{ 'latency-good' if p.latency_ms < 300 else ('latency-ok' if p.latency_ms < 1500 else 'latency-bad') if p.latency_ms > 0 else '' }}">{{ p.latency_ms if p.latency_ms else '-' }}ms</td>
+                            <td class="text-3">{{ '%.1f'|format(p.speed_mbps) if p.speed_mbps else '-' }}</td>
+                            <td class="text-3">{{ p.country or 'XX' }}</td>
+                            <td>{{ p.uptime_count }}x</td>
+                            <td>
+                                <button class="copy-btn" onclick="copyProxy('{{ p.ip }}:{{ p.port }}')">Copy</button>
+                                <button class="delete-btn" onclick="deleteProxy({{ p.id }})">Delete</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-3)">No proxies found</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+            {% set total_pages = ((total / limit) | round(0, 'ceil') | int) %}
+            {% if total_pages > 1 %}
+            <div class="pagination">
+                <a href="/proxies?page=1&protocol={{ selected_protocol }}" class="btn">&laquo;</a>
+                {% for p in range([1, page-2]|max, [total_pages+1, page+3]|min) %}
+                    <a href="/proxies?page={{ p }}&protocol={{ selected_protocol }}" class="btn {{ 'active' if p == page }}">{{ p }}</a>
+                {% endfor %}
+                <a href="/proxies?page={{ total_pages }}&protocol={{ selected_protocol }}" class="btn">&raquo;</a>
+                <span class="info">Page {{ page }} of {{ total_pages }}</span>
+            </div>
+            {% endif %}
+        </div>
+        <div class="footer">KenXploit Proxy Scraper v2.0</div>
+    </div>
+    <div class="toast" id="toast"></div>
+
+    <script>
+        async function copyProxy(addr) { try { await navigator.clipboard.writeText(addr); showToast('Copied: ' + addr); } catch(e) { showToast('Error copying','error'); } }
+        async function copyAll() {
+            const rows = document.querySelectorAll('tbody tr td:nth-child(2) code');
+            const addrs = Array.from(rows).map(e=>e.textContent).join('\n');
+            if (!addrs) { showToast('No proxies','error'); return; }
+            try { await navigator.clipboard.writeText(addrs); showToast('Copied ' + rows.length + ' proxies'); } catch(e) { showToast('Error','error'); }
+        }
+        async function deleteProxy(id) {
+            if (!confirm('Delete proxy #' + id + '?')) return;
+            try { const r = await fetch('/api/proxy/' + id + '/delete', {method:'POST'}); const d = await r.json(); if (d.status === 'deleted') { showToast('Deleted #' + id); setTimeout(()=>location.reload(),500); } else { showToast('Not found','error'); } } catch(e) { showToast('Error','error'); }
+        }
+        function searchProxy() {
+            const q = document.getElementById('search').value;
+            const proto = new URLSearchParams(location.search).get('protocol') || '';
+            const p = new URLSearchParams({search: q});
+            if (proto) p.set('protocol', proto);
+            window.location.href = '/proxies?' + p.toString();
+        }
+        function showToast(msg, type) { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show'; setTimeout(()=>{t.className='toast';}, 2500); }
+    </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+============================================
+  KENXPROXY Ultra Fast Validator v3.0
+  Threads: 150 | Timeout: 5s
+============================================
+
+[*] Validating 97216 SOCKS4 proxy (threads: 150, timeout: 5s)...
+
+[*] Validating 112526 SOCKS5 proxy (threads: 150, timeout: 5s)...
+
+[*] Validating 133143 HTTP proxy (threads: 150, timeout: 5s)...

@@ -1,0 +1,53 @@
+# KenXploit .gitignore
+
+# Sensitive data - jangan push exfiltrated data!
+exfil/
+loot/
+tmp/
+wordlists/
+
+# Reports with real target data
+report/
+reports/
+
+# Backups
+backup/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Node
+node_modules/
+bun.lock
+bun.lockb
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+*.log
+
+# Binary backup
+*.backup-*
+
+# Config with real API keys (template saja yang di-push)
+config.local.json
+opencode.local.json
+
+# Reports with real target data (capital R)
+Report/
+learn/tools/cf-bypass/CloudFail
+learn/tools/cf-bypass/CloudFlair
+learn/tools/cf-bypass/HatCloud
+learn/tools/cf-bypass/cloudflare-origin-ip

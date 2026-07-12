@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KenXploit · Settings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0c0e; --surface: #141517; --surface-2: #1c1d21; --border: #2a2c32;
+            --text: #e8e9ed; --text-2: #989aa4; --text-3: #5c5e66;
+            --accent: #4f7dff; --accent-soft: rgba(79,125,255,0.12);
+            --success: #34d399; --danger: #f87171;
+            --radius: 12px; --radius-sm: 8px;
+            --font: 'Inter', -apple-system, sans-serif;
+            --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { -webkit-font-smoothing:antialiased; }
+        body { font-family:var(--font); background:var(--bg); color:var(--text); }
+        .container { max-width:800px; margin:0 auto; padding:24px 32px; }
+
+        .header { display:flex; justify-content:space-between; align-items:center; padding:16px 0 24px; border-bottom:1px solid var(--border); margin-bottom:24px; flex-wrap:wrap; gap:16px; }
+        .header h1 { font-size:20px; font-weight:600; }
+        .nav { display:flex; gap:4px; }
+        .nav a { color:var(--text-3); text-decoration:none; padding:8px 14px; border-radius:var(--radius-sm); font-size:14px; font-weight:500; transition:var(--transition); }
+        .nav a:hover { color:var(--text); background:var(--surface-2); }
+        .nav a.active { color:var(--accent); background:var(--accent-soft); }
+
+        .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:16px; }
+        .card h2 { font-size:16px; font-weight:600; margin-bottom:12px; color:var(--text); }
+        .card p { color:var(--text-3); font-size:13px; margin-bottom:16px; line-height:1.6; }
+        .card code { font-family:'SF Mono','JetBrains Mono',monospace; font-size:12px; color:var(--accent); background:var(--accent-soft); padding:2px 6px; border-radius:4px; }
+
+        .form-group { margin-bottom:16px; }
+        .form-group label { display:block; font-size:12px; color:var(--text-2); margin-bottom:6px; font-weight:500; }
+        .form-group input { width:100%; padding:10px 14px; background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:var(--font); font-size:14px; outline:none; transition:var(--transition); }
+        .form-group input:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+        .form-group input[readonly] { color:var(--text-3); cursor:not-allowed; }
+
+        .btn { padding:10px 20px; border:1px solid var(--border); background:var(--surface); color:var(--text-2); border-radius:var(--radius-sm); cursor:pointer; font-family:var(--font); font-size:13px; font-weight:500; transition:var(--transition); }
+        .btn:hover { border-color:#3a3c44; color:var(--text); }
+        .btn-primary { background:var(--accent); color:#fff; border-color:var(--accent); }
+        .btn-primary:hover { filter:brightness(1.1); }
+        .btn-warning { border-color:#fbbf24; color:#fbbf24; }
+        .btn-warning:hover { background:rgba(251,191,36,0.1); }
+        .btn:disabled { opacity:0.5; cursor:not-allowed; }
+
+        .api-key-row { display:flex; gap:8px; align-items:center; }
+        .api-key-row input { flex:1; }
+
+        .msg { color:var(--success); font-size:13px; margin-top:8px; display:none; }
+        .msg.show { display:block; }
+        .msg.error { color:var(--danger); }
+
+        .info-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; }
+        .info-row:last-child { border-bottom:none; }
+        .info-row .label { color:var(--text-3); }
+        .info-row .value { color:var(--text-2); }
+
+        .footer { text-align:center; padding:24px; color:var(--text-3); font-size:12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Settings</h1>
+            <div class="nav">
+                <a href="/">Dashboard</a><a href="/proxies">Proxies</a><a href="/logs">Logs</a><a href="/sources">Sources</a><a href="/settings" class="active">Settings</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Account</h2>
+            <div class="info-row"><span class="label">Username</span><span class="value">{{ user }}</span></div>
+            <div class="info-row"><span class="label">Role</span><span class="value">{{ user_data.role if user_data else 'admin' }}</span></div>
+            <div class="info-row"><span class="label">Last Login</span><span class="value" id="last-login">{{ user_data.last_login if user_data else 'Never' }}</span></div>
+        </div>
+
+        <div class="card">
+            <h2>Change Password</h2>
+            <p>Minimum 8 characters. Use a unique, strong password.</p>
+            <div class="form-group"><label>Current Password</label><input type="password" id="current-pw" placeholder="Enter current password"></div>
+            <div class="form-group"><label>New Password</label><input type="password" id="new-pw" placeholder="Min 8 characters"></div>
+            <div class="form-group"><label>Confirm</label><input type="password" id="confirm-pw" placeholder="Confirm new password"></div>
+            <button class="btn btn-primary" onclick="changePassword()">Update Password</button>
+            <div class="msg" id="pw-success">Password updated</div>
+            <div class="msg error" id="pw-error"></div>
+        </div>
+
+        <div class="card">
+            <h2>API Key</h2>
+            <p>Use this key with the <code>X-API-Key</code> header for programmatic access.</p>
+            <div class="form-group">
+                <label>Your API Key</label>
+                <div class="api-key-row">
+                    <input type="text" id="api-key" readonly value="{{ user_data.api_key if user_data else 'Loading...' }}">
+                    <button class="btn" onclick="copyApiKey()">Copy</button>
+                    <button class="btn btn-warning" onclick="regenerateKey()">Regenerate</button>
+                </div>
+            </div>
+            <div class="msg" id="key-success"></div>
+            <div class="msg error" id="key-error"></div>
+        </div>
+
+        <div class="card">
+            <h2>System</h2>
+            <div class="info-row"><span class="label">Version</span><span class="value">KenXploit Proxy Scraper v2.0</span></div>
+            <div class="info-row"><span class="label">Sources</span><span class="value">{{ sources_count }} URLs</span></div>
+            <div class="info-row"><span class="label">Database</span><span class="value">SQLite</span></div>
+        </div>
+
+        <div class="footer">KenXploit Proxy Scraper v2.0</div>
+    </div>
+
+    <script>
+        const lastLogin = document.getElementById('last-login');
+        if (lastLogin) { const ts = parseInt(lastLogin.textContent); if (ts > 1000000000) lastLogin.textContent = new Date(ts * 1000).toLocaleString(); else lastLogin.textContent = 'Never'; }
+
+        async function changePassword() {
+            const current = document.getElementById('current-pw').value;
+            const newPw = document.getElementById('new-pw').value;
+            const confirm = document.getElementById('confirm-pw').value;
+            document.getElementById('pw-success').classList.remove('show');
+            document.getElementById('pw-error').classList.remove('show');
+            if (!current || !newPw) { document.getElementById('pw-error').textContent = 'Fill all fields'; document.getElementById('pw-error').classList.add('show'); return; }
+            if (newPw.length < 8) { document.getElementById('pw-error').textContent = 'Password must be 8+ characters'; document.getElementById('pw-error').classList.add('show'); return; }
+            if (newPw !== confirm) { document.getElementById('pw-error').textContent = 'Passwords do not match'; document.getElementById('pw-error').classList.add('show'); return; }
+            try {
+                const r = await fetch('/api/settings/change-password', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({current_password:current, new_password:newPw}) });
+                const d = await r.json();
+                if (r.ok) { document.getElementById('pw-success').classList.add('show'); document.getElementById('current-pw').value = ''; document.getElementById('new-pw').value = ''; document.getElementById('confirm-pw').value = ''; }
+                else { document.getElementById('pw-error').textContent = d.detail || 'Error'; document.getElementById('pw-error').classList.add('show'); }
+            } catch(e) { document.getElementById('pw-error').textContent = 'Connection error'; document.getElementById('pw-error').classList.add('show'); }
+        }
+
+        function copyApiKey() {
+            const key = document.getElementById('api-key').value;
+            navigator.clipboard.writeText(key).then(() => { document.getElementById('key-success').textContent = 'Copied!'; document.getElementById('key-success').classList.add('show'); setTimeout(()=>document.getElementById('key-success').classList.remove('show'), 2000); });
+        }
+
+        async function regenerateKey() {
+            if (!confirm('Regenerate API key? The old key will stop working.')) return;
+            try {
+                const r = await fetch('/api/settings/regenerate-key', {method:'POST'});
+                const d = await r.json();
+                if (d.api_key) { document.getElementById('api-key').value = d.api_key; document.getElementById('key-success').textContent = 'New API key generated!'; document.getElementById('key-success').classList.add('show'); setTimeout(()=>document.getElementById('key-success').classList.remove('show'), 3000); }
+            } catch(e) { document.getElementById('key-error').textContent = 'Error: ' + e.message; document.getElementById('key-error').classList.add('show'); }
+        }
+    </script>
+</body>
+</html>

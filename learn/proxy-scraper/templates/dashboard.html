@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KenXploit Proxy · Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════ TOKENS ═══════════════════ */
+        :root {
+            --bg: #0b0c0e;
+            --surface: #141517;
+            --surface-2: #1c1d21;
+            --surface-3: #24262b;
+            --border: #2a2c32;
+            --border-hover: #3a3c44;
+            --text: #e8e9ed;
+            --text-2: #989aa4;
+            --text-3: #5c5e66;
+            --accent: #4f7dff;
+            --accent-soft: rgba(79,125,255,0.12);
+            --accent-glow: rgba(79,125,255,0.08);
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --info: #60a5fa;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --radius-xl: 16px;
+            --font: 'Inter', -apple-system, sans-serif;
+            --shadow: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+
+        /* ═══════════════════ BASE ═══════════════════ */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--surface); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 3px; }
+
+        .container { max-width: 1440px; margin: 0 auto; padding: 24px 32px; }
+
+        /* ═══════════════════ HEADER ═══════════════════ */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 16px 0 24px; border-bottom: 1px solid var(--border); margin-bottom: 28px; flex-wrap: wrap; gap: 16px; }
+        .header-brand { display: flex; align-items: center; gap: 12px; }
+        .header-brand h1 { font-size: 20px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
+        .header-brand .badge { font-size: 11px; color: var(--text-3); background: var(--surface-2); padding: 2px 10px; border-radius: 20px; font-weight: 500; }
+        .header-user { display: flex; align-items: center; gap: 8px; color: var(--text-2); font-size: 14px; }
+        .header-user .avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--accent-soft); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--accent); font-weight: 600; }
+        .nav { display: flex; gap: 4px; }
+        .nav a { color: var(--text-3); text-decoration: none; padding: 8px 14px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; transition: var(--transition); }
+        .nav a:hover { color: var(--text); background: var(--surface-2); }
+        .nav a.active { color: var(--accent); background: var(--accent-soft); }
+        .nav a.logout { color: var(--danger); }
+        .nav a.logout:hover { background: rgba(248,113,113,0.1); }
+
+        /* ═══════════════════ STATS BENTO GRID ═══════════════════ */
+        .stats-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 24px; }
+        @media (max-width: 1000px) { .stats-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 600px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+        .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 16px; transition: var(--transition); }
+        .stat-card:hover { border-color: var(--border-hover); background: var(--surface-2); }
+        .stat-value { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; color: var(--text); }
+        .stat-label { font-size: 12px; color: var(--text-3); margin-top: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-sub { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+        .stat-card.-http .stat-value { color: var(--info); }
+        .stat-card.-socks4 .stat-value { color: var(--warning); }
+        .stat-card.-socks5 .stat-value { color: #a78bfa; }
+        .stat-card.-latency .stat-value { color: var(--success); }
+
+        /* ═══════════════════ STATUS BAR ═══════════════════ */
+        .status-bar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 20px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
+        .status-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .status-dot.-green { background: var(--success); box-shadow: 0 0 8px rgba(52,211,153,0.4); }
+        .status-dot.-blue { background: var(--info); box-shadow: 0 0 8px rgba(96,165,250,0.3); animation: pulse-dot 2s infinite; }
+        .status-dot.-yellow { background: var(--warning); }
+        @keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        /* ═══════════════════ MAIN LAYOUT ═══════════════════ */
+        .main-grid { display: grid; grid-template-columns: 1fr 380px; gap: 20px; }
+        @media (max-width: 1100px) { .main-grid { grid-template-columns: 1fr; } }
+
+        /* ═══════════════════ ACTIONS ═══════════════════ */
+        .actions { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); border-radius: var(--radius-sm); font-family: var(--font); font-size: 13px; font-weight: 500; cursor: pointer; transition: var(--transition); text-decoration: none; }
+        .btn:hover { border-color: var(--border-hover); color: var(--text); background: var(--surface-2); }
+        .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .btn-primary:hover { filter: brightness(1.1); background: var(--accent); }
+        .btn-primary:active { transform: scale(0.97); }
+        .btn-warning { border-color: var(--warning); color: var(--warning); }
+        .btn-warning:hover { background: rgba(251,191,36,0.1); }
+        .btn-danger { border-color: var(--danger); color: var(--danger); }
+        .btn-danger:hover { background: rgba(248,113,113,0.1); }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        /* ═══════════════════ TABLE ═══════════════════ */
+        .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+        .table-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px solid var(--border); }
+        .table-header h2 { font-size: 15px; font-weight: 600; color: var(--text); }
+        .table-header .info { font-size: 12px; color: var(--text-3); }
+        .table-scroll { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { padding: 10px 16px; text-align: left; font-weight: 500; font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); background: var(--surface-2); }
+        td { padding: 10px 16px; border-bottom: 1px solid var(--border); }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(79,125,255,0.03); }
+        code { font-family: 'SF Mono', 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent); background: var(--accent-soft); padding: 2px 8px; border-radius: 4px; }
+
+        .badge { display: inline-flex; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .badge-http { background: rgba(96,165,250,0.15); color: var(--info); }
+        .badge-socks4 { background: rgba(251,191,36,0.15); color: var(--warning); }
+        .badge-socks5 { background: rgba(167,139,250,0.15); color: #a78bfa; }
+
+        .latency-good { color: var(--success); }
+        .latency-ok { color: var(--warning); }
+        .latency-bad { color: var(--danger); }
+
+        /* ═══════════════════ LOG PANEL ═══════════════════ */
+        .log-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; height: calc(100vh - 200px); min-height: 400px; position: sticky; top: 24px; }
+        .log-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px solid var(--border); }
+        .log-header h2 { font-size: 15px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 8px; }
+        .log-actions { display: flex; gap: 6px; }
+        .log-actions button { background: none; border: 1px solid var(--border); color: var(--text-3); padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-family: var(--font); transition: var(--transition); }
+        .log-actions button:hover { border-color: var(--border-hover); color: var(--text); }
+        .log-body { flex: 1; overflow-y: auto; padding: 12px 16px; font-size: 12px; line-height: 1.7; font-family: 'SF Mono', 'JetBrains Mono', monospace; background: #08090b; }
+        .log-entry { padding: 2px 0; display: flex; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .log-time { color: var(--text-3); min-width: 70px; font-size: 11px; flex-shrink: 0; }
+        .log-level { min-width: 50px; font-size: 10px; font-weight: 600; text-transform: uppercase; flex-shrink: 0; }
+        .log-level.INFO { color: var(--info); }
+        .log-level.WARNING { color: var(--warning); }
+        .log-level.ERROR { color: var(--danger); }
+        .log-level.SUCCESS { color: var(--success); }
+        .log-msg { color: var(--text-2); word-break: break-word; }
+        .log-empty { color: var(--text-3); text-align: center; padding: 40px; font-size: 13px; }
+
+        /* ═══════════════════ TOAST ═══════════════════ */
+        .toast { position: fixed; bottom: 24px; right: 24px; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); padding: 12px 20px; border-radius: var(--radius-sm); font-size: 14px; z-index: 999; opacity: 0; transition: opacity 0.3s, transform 0.3s; transform: translateY(8px); box-shadow: var(--shadow-lg); }
+        .toast.show { opacity: 1; transform: translateY(0); }
+
+        /* ═══════════════════ LOADING ═══════════════════ */
+        .loading { text-align: center; padding: 30px; color: var(--text-3); }
+        .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ═══════════════════ FOOTER ═══════════════════ */
+        .footer { text-align: center; padding: 24px; color: var(--text-3); font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-brand">
+                <h1>KenXploit Proxy</h1>
+                <span class="badge">v2.0</span>
+            </div>
+            <div class="nav">
+                <a href="/" class="active">Dashboard</a>
+                <a href="/proxies">Proxies</a>
+                <a href="/logs">Logs</a>
+                <a href="/sources">Sources</a>
+                <a href="/settings">Settings</a>
+                <a href="/api/logout" class="logout" onclick="return confirm('Logout?')">Logout</a>
+            </div>
+            <div class="header-user">
+                <div class="avatar">S</div>
+                <span>{{ user }}</span>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card" style="grid-column:span 2;">
+                <div class="stat-value" id="s-total">{{ stats.total_alive }}</div>
+                <div class="stat-label">Proxies Alive</div>
+                <div class="stat-sub">of {{ stats.total_all }} total</div>
+            </div>
+            <div class="stat-card -http">
+                <div class="stat-value" id="s-http">{{ stats.http_alive }}</div>
+                <div class="stat-label">HTTP</div>
+            </div>
+            <div class="stat-card -socks4">
+                <div class="stat-value" id="s-socks4">{{ stats.socks4_alive }}</div>
+                <div class="stat-label">SOCKS4</div>
+            </div>
+            <div class="stat-card -socks5">
+                <div class="stat-value" id="s-socks5">{{ stats.socks5_alive }}</div>
+                <div class="stat-label">SOCKS5</div>
+            </div>
+            <div class="stat-card -latency">
+                <div class="stat-value" id="s-latency">{{ stats.avg_latency_ms }}ms</div>
+                <div class="stat-label">Avg Latency</div>
+                <div class="stat-sub">min: {{ stats.min_latency_ms }}ms</div>
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-item">
+                <span class="status-dot {{ '.-green' if state.running else '.-blue' }}" id="status-dot"></span>
+                <span id="status-text">{{ 'Scraping...' if state.running else 'Idle' }}</span>
+            </div>
+            <div class="status-item">Cycle <span id="cycle-count">{{ state.cycle_count }}</span></div>
+            <div class="status-item">Last: <span id="last-run">{{ 'N/A' if state.last_run == 0 else state.last_run }}</span></div>
+            <div class="status-item">Scraped: <span id="total-scraped">{{ state.total_scraped }}</span></div>
+            <div class="status-item">Alive: <span id="total-alive-txt">{{ state.total_alive }}</span></div>
+            <div class="status-item">{{ sources_count }} sources</div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions">
+            <button class="btn btn-primary" onclick="triggerScrape()" id="btn-scrape">Scrape Now</button>
+            <button class="btn btn-warning" onclick="triggerValidate()" id="btn-validate">Validate</button>
+            <button class="btn btn-danger" onclick="cleanupDead()" id="btn-cleanup">Cleanup</button>
+            <a href="/api/export?format=txt" class="btn">TXT</a>
+            <a href="/api/export?format=csv" class="btn">CSV</a>
+            <a href="/api/export?format=json" class="btn">JSON</a>
+        </div>
+
+        <!-- Main: Proxies + Logs -->
+        <div class="main-grid">
+            <div class="table-wrap">
+                <div class="table-header">
+                    <h2>Fastest Proxies</h2>
+                    <span class="info"><span id="proxy-count">0</span> total</span>
+                </div>
+                <div class="table-scroll" style="max-height:500px; overflow-y:auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>IP:Port</th>
+                                <th>Protocol</th>
+                                <th>Latency</th>
+                                <th>Country</th>
+                                <th>Uptime</th>
+                            </tr>
+                        </thead>
+                        <tbody id="proxy-table">
+                            <tr><td colspan="6" class="loading"><span class="spinner"></span> Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="log-panel">
+                <div class="log-header">
+                    <h2>Live Logs</h2>
+                    <div class="log-actions">
+                        <button onclick="clearLogs()">Clear</button>
+                        <button onclick="toggleAutoScroll()" id="btn-autoscroll">Auto-scroll</button>
+                        <span style="font-size:11px;color:var(--text-3)" id="log-count">0</span>
+                    </div>
+                </div>
+                <div class="log-body" id="log-body">
+                    <div class="log-empty">Connecting to log stream...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">KenXploit Proxy Scraper v2.0 · {{ sources_count }} sources</div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let ws = null, logCount = 0, autoScroll = true, wsReconnectTimer = null, wsReconnectAttempts = 0, wsPingTimer = null, wsDisconnected = false;
+
+        function connectWS() {
+            const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const getCookie = n => (document.cookie.match(new RegExp('(^| )' + n + '=([^;]+)')) || [])[2] || '';
+            const token = getCookie('token');
+            const url = proto + '//' + window.location.host + '/ws/logs?token=' + encodeURIComponent(token);
+
+            try { ws = new WebSocket(url); } catch(e) { scheduleReconnect(); return; }
+
+            ws.onopen = () => {
+                wsReconnectAttempts = 0; wsDisconnected = false;
+                if (wsPingTimer) clearInterval(wsPingTimer);
+                wsPingTimer = setInterval(() => { if (ws && ws.readyState === 1) ws.send('ping'); }, 25000);
+            };
+            ws.onmessage = e => {
+                try {
+                    const d = JSON.parse(e.data);
+                    if (d.type === 'init') { updateStats(d.stats); return; }
+                    if (d.type === 'pong' || d.type === 'ping') { if (d.type === 'ping') ws.send('ping'); return; }
+                    addLog(d.level || 'INFO', d.category || 'system', d.message);
+                } catch(_) {}
+            };
+            ws.onclose = () => {
+                if (wsPingTimer) clearInterval(wsPingTimer);
+                if (!wsDisconnected) { wsDisconnected = true; addLog('system', 'WARNING', 'Log stream disconnected'); }
+                scheduleReconnect();
+            };
+            ws.onerror = () => { ws.close(); };
+        }
+
+        function scheduleReconnect() {
+            if (wsReconnectTimer) clearTimeout(wsReconnectTimer);
+            wsReconnectAttempts++;
+            const delay = Math.min(1000 * Math.pow(2, Math.min(wsReconnectAttempts, 5)), 30000);
+            wsReconnectTimer = setTimeout(connectWS, delay);
+        }
+
+        function addLog(level, category, msg) {
+            const body = document.getElementById('log-body');
+            const empty = body.querySelector('.log-empty');
+            if (empty) empty.remove();
+            const e = document.createElement('div');
+            e.className = 'log-entry';
+            e.innerHTML = '<span class="log-time">' + new Date().toLocaleTimeString() + '</span><span class="log-level ' + (level||'INFO').toUpperCase() + '">' + (level||'INFO') + '</span><span class="log-msg">' + (msg||'') + '</span>';
+            body.appendChild(e);
+            logCount++; document.getElementById('log-count').textContent = logCount;
+            if (autoScroll) body.scrollTop = body.scrollHeight;
+            while (body.children.length > 500) body.removeChild(body.firstChild);
+        }
+
+        function clearLogs() { document.getElementById('log-body').innerHTML = ''; logCount = 0; document.getElementById('log-count').textContent = '0'; }
+        function toggleAutoScroll() { autoScroll = !autoScroll; document.getElementById('btn-autoscroll').textContent = autoScroll ? 'Auto-scroll' : 'Manual'; }
+
+        async function refreshStats() {
+            try {
+                const r = await fetch('/api/stats');
+                const d = await r.json();
+                updateStats(d);
+            } catch(_) {}
+        }
+
+        function updateStats(d) {
+            if (!d) return;
+            document.getElementById('s-total').textContent = d.total_alive || 0;
+            document.getElementById('s-http').textContent = d.http_alive || 0;
+            document.getElementById('s-socks4').textContent = d.socks4_alive || 0;
+            document.getElementById('s-socks5').textContent = d.socks5_alive || 0;
+            document.getElementById('s-latency').textContent = (d.avg_latency_ms || 0) + 'ms';
+            if (d.state) {
+                document.getElementById('cycle-count').textContent = d.state.cycle_count || 0;
+                document.getElementById('total-scraped').textContent = d.state.total_scraped || 0;
+                document.getElementById('total-alive-txt').textContent = d.state.total_alive || 0;
+                document.getElementById('last-run').textContent = d.state.last_run ? new Date(d.state.last_run*1000).toLocaleTimeString() : 'N/A';
+                const dot = document.getElementById('status-dot');
+                const txt = document.getElementById('status-text');
+                if (d.state.running) {
+                    dot.className = 'status-dot -green'; txt.textContent = 'Scraping...';
+                    document.getElementById('btn-scrape').disabled = true;
+                } else {
+                    dot.className = 'status-dot -blue'; txt.textContent = 'Idle';
+                    document.getElementById('btn-scrape').disabled = false;
+                }
+            }
+        }
+
+        async function loadProxies() {
+            try {
+                const r = await fetch('/api/proxies?limit=20&sort=latency_ms&order=ASC');
+                const d = await r.json();
+                document.getElementById('proxy-count').textContent = d.total || 0;
+                const tbody = document.getElementById('proxy-table');
+                if (!d.proxies || !d.proxies.length) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-3)">No proxies yet</td></tr>';
+                    return;
+                }
+                let html = '';
+                d.proxies.forEach((p,i) => {
+                    const cls = p.latency_ms < 300 ? 'latency-good' : p.latency_ms < 1500 ? 'latency-ok' : 'latency-bad';
+                    html += '<tr><td style="color:var(--text-3)">' + (i+1) + '</td><td><code>' + p.ip + ':' + p.port + '</code></td><td><span class="badge badge-' + p.protocol + '">' + p.protocol.toUpperCase() + '</span></td><td class="' + cls + '">' + (p.latency_ms || '-') + 'ms</td><td>' + (p.country||'XX') + '</td><td>' + (p.uptime_count||0) + 'x</td></tr>';
+                });
+                tbody.innerHTML = html;
+            } catch(_) {}
+        }
+
+        async function triggerScrape() {
+            const btn = document.getElementById('btn-scrape');
+            btn.disabled = true; btn.textContent = 'Scraping...';
+            try { await fetch('/api/scrape', {method:'POST'}); showToast('Scrape started'); } catch(e) { showToast('Error','error'); }
+            setTimeout(() => { btn.disabled = false; btn.innerHTML = 'Scrape Now'; }, 5000);
+        }
+
+        async function triggerValidate() {
+            const btn = document.getElementById('btn-validate');
+            btn.disabled = true; btn.textContent = 'Validating...';
+            try { await fetch('/api/validate', {method:'POST'}); showToast('Validation started'); } catch(e) { showToast('Error','error'); }
+            setTimeout(() => { btn.disabled = false; btn.innerHTML = 'Validate'; }, 3000);
+        }
+
+        async function cleanupDead() {
+            if (!confirm('Delete all dead proxies?')) return;
+            const btn = document.getElementById('btn-cleanup');
+            btn.disabled = true;
+            try { const r = await fetch('/api/proxies/cleanup', {method:'POST'}); const d = await r.json(); showToast('Cleaned ' + d.deleted + ' dead proxies'); } catch(e) { showToast('Error','error'); }
+            setTimeout(() => { btn.disabled = false; btn.innerHTML = 'Cleanup'; }, 2000);
+        }
+
+        function showToast(msg, type) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.className = 'toast show';
+            setTimeout(() => { t.className = 'toast'; }, 3000);
+        }
+
+        connectWS();
+        loadProxies();
+        setInterval(refreshStats, 10000);
+        setInterval(loadProxies, 15000);
+    </script>
+</body>
+</html>
